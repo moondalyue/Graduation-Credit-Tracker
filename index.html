@@ -835,7 +835,7 @@
                 } catch(e) {
                     console.error('Load error:', e);
                 }
-                // First time load fallback
+                // First time or empty data fallback - force load default 15 courses
                 appData.userId = generateUserId();
                 appData.courses = [...DEMO_COURSES];
                 saveAppData();
