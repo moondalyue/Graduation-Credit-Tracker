@@ -37,6 +37,12 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-700 max-w-full overflow-x-hidden">
 
+    <!-- Global Toast Notification Banner -->
+    <div id="toast-notification" class="fixed top-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs sm:text-sm font-semibold transform translate-y-[-100px] opacity-0 transition-all duration-300 pointer-events-none">
+        <span id="toast-icon" class="text-base">✅</span>
+        <span id="toast-message">저장되었습니다.</span>
+    </div>
+
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm w-full">
         <div class="max-w-5xl mx-auto px-3 sm:px-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between min-h-[4rem] h-auto sm:h-16 py-2.5 sm:py-0 gap-2 sm:gap-4">
@@ -300,7 +306,7 @@
                     <span>📅</span> 학기 선택:
                 </label>
                 <div id="semester-button-grid" class="flex flex-wrap gap-1.5">
-                    <!-- Dynamic semester buttons rendered according to degree track -->
+                    <!-- Dynamic semester buttons rendered according to degree track (including 'ALL') -->
                 </div>
 
                 <!-- Filter & Action Buttons -->
@@ -444,9 +450,13 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-2">
-                        <button type="submit" class="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md transition-all">
-                            설정 저장하기
+                    <div class="flex items-center justify-between pt-2">
+                        <span id="settings-save-status" class="text-xs font-bold text-emerald-600 opacity-0 transition-opacity flex items-center gap-1">
+                            <span>✓</span> 설정이 안전하게 저장되었습니다!
+                        </span>
+                        <button type="submit" id="btn-save-settings" class="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5">
+                            <span>💾</span>
+                            <span id="btn-save-settings-text">설정 저장하기</span>
                         </button>
                     </div>
                 </form>
@@ -684,6 +694,32 @@
         </div>
     </div>
 
+    <!-- MODAL 5: RETAKE COMPARISON -->
+    <div id="modal-retake-comparison" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[85vh]">
+            <div class="px-4 sm:px-5 py-3.5 bg-amber-50 border-b border-amber-100 flex items-center justify-between flex-shrink-0">
+                <h3 class="font-bold text-amber-950 text-sm sm:text-base flex items-center gap-1.5">
+                    <span>📊</span> 재수강 성적 비교 분석
+                </h3>
+                <button onclick="window.closeRetakeComparisonModal()" class="text-amber-500 hover:text-amber-700 font-bold px-1 text-lg">✕</button>
+            </div>
+
+            <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+                <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-200/80 text-xs text-amber-900 leading-relaxed">
+                    💡 이전 수강 성적과 재수강 후 성적을 비교하여 향상된 평점과 취득 학점 차이를 확인할 수 있습니다.
+                </div>
+
+                <div id="retake-comparison-container" class="space-y-3">
+                    <!-- Dynamic comparison list rendered here -->
+                </div>
+            </div>
+
+            <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex justify-end flex-shrink-0">
+                <button onclick="window.closeRetakeComparisonModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl shadow-sm">닫기</button>
+            </div>
+        </div>
+    </div>
+
     <!-- APP LOGIC -->
     <script>
         (function() {
@@ -755,6 +791,24 @@
                 { id: '14', semester: '2-1', name: '학술적 글쓰기와 발표', credits: 3, category: 'LIBERAL', grade: 'A0', isRetake: true },
                 { id: '15', semester: '2-1', name: '영어학의 이해', credits: 3, category: 'MAJOR_BASE', grade: 'B+', isRetake: true }
             ];
+
+            // TOAST NOTIFICATION HELPER
+            window.showToast = function(msg, icon = '✅') {
+                const toast = document.getElementById('toast-notification');
+                const toastMsg = document.getElementById('toast-message');
+                const toastIcon = document.getElementById('toast-icon');
+                if (!toast) return;
+
+                toastMsg.textContent = msg;
+                toastIcon.textContent = icon;
+                toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-[-100px]', 'opacity-0');
+                }, 2500);
+            };
 
             // STORAGE HELPERS
             function saveAppData() {
@@ -936,6 +990,19 @@
                 const semGrid = document.getElementById('semester-button-grid');
                 semGrid.innerHTML = '';
 
+                // '전체' (All Semesters) button
+                const allBtn = document.createElement('button');
+                allBtn.type = 'button';
+                const isAllActive = appData.currentSemester === 'ALL';
+                allBtn.className = `px-3 py-1.5 text-xs font-bold rounded-xl transition-all border ${isAllActive ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'}`;
+                allBtn.textContent = '전체 학기';
+                allBtn.onclick = () => {
+                    appData.currentSemester = 'ALL';
+                    saveAppData();
+                    renderCoursesTab();
+                };
+                semGrid.appendChild(allBtn);
+
                 sems.forEach(sem => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
@@ -962,8 +1029,12 @@
                     }
                 });
 
-                // Render current semester list
-                const semCourses = appData.courses.filter(c => c.semester === appData.currentSemester);
+                // Filter courses by selected semester
+                const semCourses = appData.courses.filter(c => {
+                    if (appData.currentSemester === 'ALL') return true;
+                    return c.semester === appData.currentSemester;
+                });
+
                 const filteredCourses = semCourses.filter(c => {
                     if (appData.currentCategoryFilter === 'ALL') return true;
                     if (appData.currentCategoryFilter === 'MAJOR_ALL') return c.category !== 'LIBERAL';
@@ -987,7 +1058,8 @@
                     }
                 });
 
-                document.getElementById('summary-semester-title').textContent = `${appData.currentSemester} 학기 요약`;
+                const semTitleText = appData.currentSemester === 'ALL' ? '전체 학기 요약' : `${appData.currentSemester} 학기 요약`;
+                document.getElementById('summary-semester-title').textContent = semTitleText;
                 document.getElementById('summary-applied-credits').textContent = applied;
                 document.getElementById('summary-earned-credits').textContent = earned;
                 document.getElementById('summary-semester-gpa').textContent = gpaCrSum > 0 ? (ptsSum / gpaCrSum).toFixed(2) : '0.00';
@@ -1016,6 +1088,7 @@
                         <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition-colors text-xs sm:text-sm">
                             <td class="p-3 sm:p-4">
                                 <div class="font-bold text-slate-800 flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-slate-400 font-mono text-[11px] mr-1">[${c.semester}]</span>
                                     <span>${c.name}</span>
                                     ${c.isRetake ? '<span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-100 text-amber-800">재수강</span>' : ''}
                                 </div>
@@ -1142,7 +1215,7 @@
                 document.getElementById('modal-input-is-retake').checked = false;
 
                 fillSemesterOptions();
-                document.getElementById('modal-input-semester').value = appData.currentSemester;
+                document.getElementById('modal-input-semester').value = appData.currentSemester === 'ALL' ? '2-1' : appData.currentSemester;
                 document.getElementById('modal-course').classList.remove('hidden');
             };
 
@@ -1217,6 +1290,7 @@
                 saveAppData();
                 closeCourseModal();
                 renderAll();
+                window.showToast('과목 정보가 저장되었습니다.', '📚');
             };
 
             window.deleteCourse = function(id) {
@@ -1224,6 +1298,7 @@
                     appData.courses = appData.courses.filter(c => c.id !== id);
                     saveAppData();
                     renderAll();
+                    window.showToast('과목이 삭제되었습니다.', '🗑️');
                 }
             };
 
@@ -1254,6 +1329,7 @@
                 saveAppData();
                 closeStudentInfoModal();
                 renderAll();
+                window.showToast('프로필 정보가 수정되었습니다.', '📝');
             };
 
             // SETTINGS HANDLERS
@@ -1266,6 +1342,7 @@
                 }
                 saveAppData();
                 renderAll();
+                window.showToast('학제가 변경되었습니다.', '🎓');
             };
 
             window.handleSaveSettings = function(e) {
@@ -1278,8 +1355,36 @@
                 appData.targets.majorBase = document.getElementById('input-target-major-base').value ? Number(document.getElementById('input-target-major-base').value) : null;
 
                 saveAppData();
-                alert('졸업 기준 설정이 저장되었습니다.');
                 renderAll();
+
+                // Button state animation feedback
+                const saveBtn = document.getElementById('btn-save-settings');
+                const btnText = document.getElementById('btn-save-settings-text');
+                const statusTxt = document.getElementById('settings-save-status');
+
+                if (saveBtn && btnText) {
+                    saveBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    saveBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+                    btnText.textContent = '저장 완료!';
+                }
+                if (statusTxt) {
+                    statusTxt.classList.remove('opacity-0');
+                    statusTxt.classList.add('opacity-100');
+                }
+
+                window.showToast('졸업 기준 설정이 성공적으로 저장되었습니다!', '⚙️');
+
+                setTimeout(() => {
+                    if (saveBtn && btnText) {
+                        saveBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+                        saveBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        btnText.textContent = '설정 저장하기';
+                    }
+                    if (statusTxt) {
+                        statusTxt.classList.remove('opacity-100');
+                        statusTxt.classList.add('opacity-0');
+                    }
+                }, 2000);
             };
 
             window.toggleIncludeBaseInMajor = function(checked) {
@@ -1303,7 +1408,7 @@
             };
             window.copyCloudId = function() {
                 navigator.clipboard.writeText(appData.userId);
-                alert('동기화 ID가 클립보드에 복사되었습니다.');
+                window.showToast('동기화 ID가 복사되었습니다.', '📋');
             };
 
             window.openBackupModal = function() {
@@ -1317,7 +1422,7 @@
                 const txt = document.getElementById('input-backup-data');
                 txt.select();
                 navigator.clipboard.writeText(txt.value);
-                alert('백업 코드가 클립보드에 복사되었습니다.');
+                window.showToast('백업 코드가 복사되었습니다.', '📋');
             };
             window.restoreBackupCode = function() {
                 try {
@@ -1328,7 +1433,7 @@
                         saveAppData();
                         closeBackupModal();
                         renderAll();
-                        alert('데이터가 성공적으로 복원되었습니다.');
+                        window.showToast('데이터가 성공적으로 복원되었습니다.', '🔄');
                     } else {
                         alert('올바르지 않은 백업 데이터 형식입니다.');
                     }
@@ -1346,7 +1451,97 @@
             };
 
             window.openRetakeComparisonModal = function() {
-                alert('재수강 성적 비교: 이전 수강 과목과 재수강 과목의 성적을 비교 분석합니다.');
+                const modal = document.getElementById('modal-retake-comparison');
+                const container = document.getElementById('retake-comparison-container');
+                if (!modal || !container) return;
+
+                // Group courses by normalized name to find retaken pairs
+                const coursesByName = {};
+                appData.courses.forEach(c => {
+                    const normName = c.name.trim();
+                    if (!coursesByName[normName]) {
+                        coursesByName[normName] = [];
+                    }
+                    coursesByName[normName].push(c);
+                });
+
+                // Filter pairs that have retakes or multiple entries
+                const retakePairs = [];
+                Object.keys(coursesByName).forEach(name => {
+                    const list = coursesByName[name];
+                    if (list.length > 1 || list.some(item => item.isRetake)) {
+                        // Sort by semester / id to identify original vs retake
+                        list.sort((a, b) => a.semester.localeCompare(b.semester));
+                        retakePairs.push({
+                            name,
+                            original: list[0],
+                            retake: list[list.length - 1]
+                        });
+                    }
+                });
+
+                if (retakePairs.length === 0) {
+                    container.innerHTML = `
+                        <div class="py-8 text-center text-slate-400 space-y-2">
+                            <p class="text-3xl">📝</p>
+                            <p class="text-xs font-semibold">등록된 재수강 과목 내역이 없습니다.</p>
+                            <p class="text-[11px] text-slate-400">동일한 과목명으로 과목을 추가하거나 '재수강 과목으로 표시'를 체크해 보세요.</p>
+                        </div>`;
+                } else {
+                    let totalPtDiff = 0;
+                    const itemsHtml = retakePairs.map(pair => {
+                        const origPts = GRADE_POINTS[pair.original.grade] !== null ? GRADE_POINTS[pair.original.grade] : 0;
+                        const retakePts = GRADE_POINTS[pair.retake.grade] !== null ? GRADE_POINTS[pair.retake.grade] : 0;
+                        const diff = (retakePts - origPts).toFixed(1);
+                        totalPtDiff += (retakePts - origPts);
+
+                        const diffBadge = diff > 0 
+                            ? `<span class="px-2 py-0.5 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-lg">▲ +${diff}점 상승</span>`
+                            : diff < 0 
+                            ? `<span class="px-2 py-0.5 text-xs font-bold bg-rose-100 text-rose-700 rounded-lg">▼ ${diff}점</span>`
+                            : `<span class="px-2 py-0.5 text-xs font-bold bg-slate-100 text-slate-600 rounded-lg">동일 (${diff})</span>`;
+
+                        return `
+                            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-900 text-xs sm:text-sm">${pair.name}</span>
+                                    ${diffBadge}
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-white p-2.5 rounded-lg border border-slate-100">
+                                        <div class="text-[10px] text-slate-400 font-semibold mb-0.5">이전 수강 [${pair.original.semester}]</div>
+                                        <div class="flex items-center justify-between font-bold text-slate-700">
+                                            <span>성적: ${pair.original.grade}</span>
+                                            <span class="text-slate-400 font-mono text-[11px]">(${origPts} / 4.5)</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-blue-50/60 p-2.5 rounded-lg border border-blue-100">
+                                        <div class="text-[10px] text-blue-500 font-semibold mb-0.5">재수강 [${pair.retake.semester}]</div>
+                                        <div class="flex items-center justify-between font-bold text-blue-700">
+                                            <span>성적: ${pair.retake.grade}</span>
+                                            <span class="text-blue-500 font-mono text-[11px]">(${retakePts} / 4.5)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                    }).join('');
+
+                    const totalDiffText = totalPtDiff > 0 ? `+${totalPtDiff.toFixed(1)}점` : `${totalPtDiff.toFixed(1)}점`;
+
+                    container.innerHTML = `
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs font-bold text-blue-900 mb-3">
+                            <span>총 재수강 감지: ${retakePairs.length}개 과목</span>
+                            <span class="text-blue-700">총 성적 향상: <strong class="text-sm font-extrabold text-blue-800">${totalDiffText}</strong></span>
+                        </div>
+                        ${itemsHtml}`;
+                }
+
+                modal.classList.remove('hidden');
+            };
+
+            window.closeRetakeComparisonModal = function() {
+                const modal = document.getElementById('modal-retake-comparison');
+                if (modal) modal.classList.add('hidden');
             };
 
             // INIT APP ON LOAD
