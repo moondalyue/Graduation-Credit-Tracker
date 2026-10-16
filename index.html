@@ -123,10 +123,10 @@
                                 2학년 1학기
                             </span>
                         </div>
-                        <div>
-                            <div id="profile-name" class="font-extrabold text-slate-900 text-lg sm:text-xl truncate">김동의</div>
+                        <div class="flex flex-col">
+                            <span id="profile-name" class="font-black text-slate-900 text-xl sm:text-2xl truncate">김동의</span>
                             <div class="flex items-baseline gap-1.5 flex-wrap">
-                                <span id="profile-dept" class="font-bold text-slate-700 text-sm sm:text-base truncate">영어영문학과</span>
+                                <span id="profile-dept" class="font-extrabold text-slate-700 text-base sm:text-lg truncate">영어영문학과</span>
                                 <span class="text-xs font-semibold text-slate-400 whitespace-nowrap">재학생 프로필</span>
                             </div>
                         </div>
@@ -460,7 +460,7 @@
                     </h3>
                 </div>
 
-                <!-- Semester Selector Buttons (4 per row on mobile) -->
+                <!-- Semester Selector Buttons -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700">기준 학기 선택:</label>
                     <div id="rec-semester-button-grid" class="grid grid-cols-4 sm:flex sm:flex-wrap gap-1.5">
@@ -525,9 +525,9 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">학점</label>
                         <select id="modal-input-credits" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
-                            <option value="1" selected>1 학점</option>
+                            <option value="1">1 학점</option>
                             <option value="2">2 학점</option>
-                            <option value="3">3 학점</option>
+                            <option value="3" selected>3 학점</option>
                             <option value="4">4 학점</option>
                             <option value="5">5 학점</option>
                         </select>
@@ -576,211 +576,37 @@
         </div>
     </div>
 
-    <!-- MODAL 2: DIRECT RETAKE & INSTANT GRADE WAIVER MODAL -->
-    <div id="modal-retake-apply" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-white w-full max-w-md max-h-[90vh] rounded-2xl shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div class="px-4 sm:px-5 py-3.5 bg-amber-50 border-b border-amber-100 flex items-center justify-between flex-shrink-0">
-                <h3 class="font-bold text-amber-950 text-sm sm:text-base flex items-center gap-1.5">
-                    <span>↺</span> 재수강 등록 및 성적 포기 설정
-                </h3>
-                <button onclick="window.closeRetakeModal()" class="text-amber-500 hover:text-amber-700 font-bold px-1">✕</button>
-            </div>
-
-            <form onsubmit="window.handleSaveRetakeLink(event)" class="flex flex-col min-h-0 flex-1 overflow-hidden">
-                <div class="p-4 sm:p-5 space-y-3.5 sm:space-y-4 overflow-y-auto flex-1 min-h-0 overscroll-contain" style="-webkit-overflow-scrolling: touch;">
-                    <div class="bg-amber-50/50 p-3 rounded-xl text-xs text-amber-800 border border-amber-100 space-y-1">
-                        <p>• 선택하신 이전 과목의 재수강 등록 및 성적 포기를 설정합니다.</p>
-                        <p>• <strong>'성적 포기' 버튼 클릭 시 즉시 실시간 데이터 저장 및 평점에 반영</strong>됩니다.</p>
-                    </div>
-
-                    <!-- Read-Only Auto-Linked Target Course Banner -->
-                    <div class="p-3 bg-amber-100/60 rounded-xl border border-amber-200 text-xs space-y-1">
-                        <span class="text-amber-900 font-bold block">🎯 재수강 대상 과목 (자동 연결)</span>
-                        <div class="flex items-center justify-between flex-wrap gap-1 mt-0.5">
-                            <strong id="retake-auto-course-name" class="text-slate-900 text-sm font-bold">-</strong>
-                            <span id="retake-auto-course-info" class="text-slate-600 font-medium text-xs">-</span>
-                        </div>
-                    </div>
-
-                    <!-- Instant Grade Waiver Toggle Button -->
-                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-700">대상 과목 성적 포기</span>
-                            <button type="button" id="btn-toggle-modal-waiver" onclick="window.toggleModalWaiverStateInstant()" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200">
-                                성적 포기
-                            </button>
-                        </div>
-                        <p class="text-[11px] text-slate-500 leading-tight">
-                            ※ 버튼 클릭 즉시 성적 포기 상태가 저장되며 누적 평점 및 학점에서 제외/복구됩니다. (A+~F 모두 가능)
-                        </p>
-                    </div>
-
-                    <!-- Target Semester for Retake -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">재수강을 진행할 학기</label>
-                        <select id="retake-target-semester" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-amber-500 bg-white">
-                        </select>
-                    </div>
-
-                    <!-- Grade to Assign for the Retake Course -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">재수강 성적 상태</label>
-                        <select id="retake-new-grade" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-amber-500 bg-white">
-                            <option value="PENDING">⌛ 수강 중 / 성적 미확정 (기존 성적 유지)</option>
-                            <option value="A+">A+ (4.5)</option>
-                            <option value="A0">A0 (4.0)</option>
-                            <option value="B+">B+ (3.5)</option>
-                            <option value="B0">B0 (3.0)</option>
-                            <option value="C+">C+ (2.5)</option>
-                            <option value="C0">C0 (2.0)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="p-3 sm:p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2 flex-shrink-0 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-4">
-                    <button type="button" onclick="window.closeRetakeModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs sm:text-sm font-semibold rounded-xl transition-colors">취소</button>
-                    <button type="submit" id="btn-submit-retake" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-md transition-colors">재수강 등록하기</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL 3: RETAKE COMPARISON MODAL -->
-    <div id="modal-retake-comparison" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-white w-full max-w-lg max-h-[90vh] rounded-2xl shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div class="px-4 sm:px-5 py-3.5 bg-indigo-50 border-b border-indigo-100 flex items-center justify-between flex-shrink-0">
-                <h3 class="font-bold text-indigo-950 text-sm sm:text-base flex items-center gap-1.5">
-                    <span>📊</span> 재수강 전·후 성적 비교 시뮬레이션
-                </h3>
-                <button onclick="window.closeRetakeComparisonModal()" class="text-indigo-400 hover:text-indigo-600 font-bold px-1">✕</button>
-            </div>
-            <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 min-h-0">
-                <p class="text-xs text-slate-500">
-                    재수강이 연결되었거나 진행 중인 과목의 성적 반영 전·후 변화를 비교합니다.
-                </p>
-                <div id="retake-comparison-list" class="space-y-3">
-                </div>
-            </div>
-            <div class="p-3 sm:p-4 bg-slate-50 border-t border-slate-100 flex justify-end flex-shrink-0">
-                <button onclick="window.closeRetakeComparisonModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold rounded-xl">닫기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 4: CLOUD MULTI-DEVICE SYNC MODAL -->
-    <div id="modal-cloud-sync" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div class="px-4 sm:px-5 py-3.5 bg-emerald-50 border-b border-emerald-100 flex items-center justify-between">
-                <h3 class="font-bold text-emerald-950 text-sm sm:text-base flex items-center gap-1.5">
-                    <span>☁️</span> 기기 간 클라우드 실시간 동기화
-                </h3>
-                <button onclick="window.closeCloudSyncModal()" class="text-emerald-400 hover:text-emerald-600 font-bold px-1">✕</button>
-            </div>
-            <div class="p-4 sm:p-5 space-y-4">
-                <div class="p-3 bg-emerald-50/70 rounded-xl border border-emerald-100 text-xs text-emerald-900 space-y-1">
-                    <p>• 내 동기화 ID를 다른 기기(스마트폰, 아이패드, PC 등)에 입력하면 <strong>실시간으로 과목 데이터를 주고받을 수 있습니다.</strong></p>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">내 동기화 ID (현재 기기)</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="modal-cloud-my-id" readonly class="flex-1 px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-800">
-                        <button onclick="window.copyMyCloudId()" type="button" class="px-3 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 transition-colors">
-                            ID 복사
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pt-2 border-t border-slate-100">
-                    <label class="block text-xs font-bold text-slate-700 mb-1">다른 기기 데이터 연결하기 (기존 ID 입력)</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="modal-cloud-connect-id" placeholder="예: USER-A1B2C3D4" class="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-mono uppercase text-slate-800 focus:outline-none focus:border-emerald-500">
-                        <button onclick="window.connectOtherCloudId()" type="button" class="px-3 py-2 bg-slate-800 text-white text-xs font-bold rounded-xl hover:bg-slate-900 transition-colors">
-                            연결 &amp; 불러오기
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 5: DATA BACKUP & RESTORE MODAL -->
-    <div id="modal-backup-restore" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div class="px-4 sm:px-5 py-3.5 bg-blue-50 border-b border-blue-100 flex items-center justify-between">
-                <h3 class="font-bold text-blue-950 text-sm sm:text-base flex items-center gap-1.5">
-                    <span>💾</span> 백업 코드 저장 및 100% 복원
-                </h3>
-                <button onclick="window.closeBackupModal()" class="text-blue-400 hover:text-blue-600 font-bold px-1">✕</button>
-            </div>
-            <div class="p-4 sm:p-5 space-y-4">
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    아래 백업 코드를 복사해두거나 보관된 코드를 붙여넣어 단 한 번의 클릭으로 데이터를 원상 복구할 수 있습니다.
-                </p>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">백업 / 복원 데이터 코드</label>
-                    <textarea id="backup-code-area" rows="6" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[11px] font-mono text-slate-700 focus:outline-none focus:border-blue-500"></textarea>
-                </div>
-                <div class="flex items-center justify-between gap-2 pt-1">
-                    <button onclick="window.copyBackupCode()" type="button" class="flex-1 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl transition-colors">
-                        📋 백업 코드 복사
-                    </button>
-                    <button onclick="window.restoreBackupCode()" type="button" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors">
-                        📥 붙여넣은 코드로 복원
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 6: DELETE CONFIRMATION MODAL -->
-    <div id="modal-delete-confirm" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-white w-full max-w-sm rounded-2xl shadow-xl p-5 text-center space-y-4 animate-in fade-in zoom-in duration-200">
-            <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto text-xl">
-                🗑️
-            </div>
-            <div>
-                <h3 class="text-base font-bold text-slate-900">과목을 삭제하시겠습니까?</h3>
-                <p id="delete-course-name" class="text-xs text-slate-500 mt-1 font-medium text-rose-600">선택한 과목 정보가 즉시 삭제됩니다.</p>
-            </div>
-            <div class="flex gap-2 pt-1">
-                <button onclick="window.closeDeleteModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-semibold rounded-xl">취소</button>
-                <button id="btn-confirm-delete" class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-md">삭제하기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 7: STUDENT INFO EDIT MODAL -->
+    <!-- MODAL 2: STUDENT PROFILE EDIT -->
     <div id="modal-student-info" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div class="px-4 sm:px-5 py-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
-                    <span>🪪</span> 재학생 프로필 정보 수정
+                    <span>📝</span> 프로필 수정
                 </h3>
                 <button onclick="window.closeStudentInfoModal()" class="text-slate-400 hover:text-slate-600 font-bold px-1">✕</button>
             </div>
 
-            <form onsubmit="window.handleSaveStudentInfo(event)" class="p-4 sm:p-5 space-y-3.5 sm:space-y-4">
+            <form onsubmit="window.handleSaveStudentInfo(event)" class="p-4 sm:p-5 space-y-3.5">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">성명 (이름)</label>
-                    <input type="text" id="modal-input-name-info" placeholder="예: 김동의 (미입력 시 '이름 입력'으로 표시)" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500">
-                    <p class="text-[11px] text-slate-400 mt-1">※ 실제 개인정보 대신 가명(예: 김동의) 사용을 권장합니다.</p>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">이름 / 성명</label>
+                    <input type="text" id="modal-input-student-name" placeholder="예: 김동의" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                    <p class="text-[11px] text-slate-400 mt-1">※ 개인정보 보호를 위해 가상 이름 사용을 권장합니다.</p>
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">학교명</label>
-                    <input type="text" id="modal-input-school" required placeholder="예: 동의과학대학교" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                    <input type="text" id="modal-input-school-name" placeholder="예: 동의과학대학교" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">학과명</label>
-                    <input type="text" id="modal-input-dept" required placeholder="예: 영어영문학과" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">학과 / 전공명</label>
+                    <input type="text" id="modal-input-dept-name" placeholder="예: 영어영문학과" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">현재 학년</label>
-                        <select id="modal-input-grade" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">학년</label>
+                        <select id="modal-input-student-grade" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
                             <option value="1학년">1학년</option>
                             <option value="2학년" selected>2학년</option>
                             <option value="3학년">3학년</option>
@@ -788,8 +614,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">현재 학기</label>
-                        <select id="modal-input-semester-info" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">학기</label>
+                        <select id="modal-input-student-semester" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
                             <option value="1학기" selected>1학기</option>
                             <option value="2학기">2학기</option>
                         </select>
@@ -804,31 +630,732 @@
         </div>
     </div>
 
-    <!-- Firebase Cloud Firestore Imports -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- MODAL 3: CLOUD SYNC & DATA BACKUP -->
+    <div id="modal-cloud-sync" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="px-4 sm:px-5 py-3.5 bg-emerald-50 border-b border-emerald-100 flex items-center justify-between">
+                <h3 class="font-bold text-emerald-950 text-sm sm:text-base flex items-center gap-1.5">
+                    <span>☁️</span> 기기 간 동기화 &amp; 백업
+                </h3>
+                <button onclick="window.closeCloudSyncModal()" class="text-emerald-500 hover:text-emerald-700 font-bold px-1">✕</button>
+            </div>
 
-        // Global Firebase Configuration Fallback
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'graduation-tracker-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "",
-            authDomain: "graduation-tracker.firebaseapp.com",
-            projectId: "graduation-tracker",
-            storageBucket: "graduation-tracker.appspot.com"
-        };
+            <div class="p-4 sm:p-5 space-y-4 text-xs sm:text-sm">
+                <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 space-y-1.5">
+                    <strong class="text-emerald-900 block">내 현재 동기화 ID:</strong>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="input-my-cloud-id" readonly class="w-full px-2.5 py-1.5 bg-white border border-emerald-300 rounded-lg font-mono font-bold text-emerald-800 text-xs select-all">
+                        <button onclick="window.copyCloudId()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs whitespace-nowrap shadow-sm">복사</button>
+                    </div>
+                </div>
 
-        let db = null;
-        let auth = null;
-        let currentUser = null;
-        let userCloudId = localStorage.getItem('GRADUATION_CLOUD_USER_ID') || ('USER-' + Math.random().toString(36).substring(2, 10).toUpperCase());
-        localStorage.setItem('GRADUATION_CLOUD_USER_ID', userCloudId);
+                <div class="space-y-2 pt-1 border-t border-slate-100">
+                    <label class="block font-bold text-slate-800">다른 기기의 동기화 ID로 연동하기:</label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="input-target-cloud-id" placeholder="USER-XXXX-XXXX 형식 입력" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-mono focus:outline-none focus:border-emerald-500">
+                        <button onclick="window.handleConnectCloudId()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl text-xs whitespace-nowrap shadow-sm">연동</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        try {
-            const firebaseApp = initializeApp(firebaseConfig);
-            db = getFirestore(firebaseApp);
-            auth = getAuth(firebaseApp);
+    <!-- MODAL 4: BACKUP / RESTORE CODE -->
+    <div id="modal-backup" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="px-4 sm:px-5 py-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                    <span>💾</span> 백업 코드 복사 / 복원
+                </h3>
+                <button onclick="window.closeBackupModal()" class="text-slate-400 hover:text-slate-600 font-bold px-1">✕</button>
+            </div>
 
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth
+            <div class="p-4 sm:p-5 space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">백업 데이터 텍스트</label>
+                    <textarea id="input-backup-data" rows="6" placeholder="백업 코드를 내보내거나 이곳에 붙여넣으세요..." class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-mono focus:outline-none focus:border-blue-500 select-all"></textarea>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="window.copyBackupCode()" class="flex-1 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs rounded-xl border border-blue-200">백업 코드 복사</button>
+                    <button onclick="window.restoreBackupCode()" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md">복원하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP LOGIC -->
+    <script>
+        (function() {
+            // GRADE CONSTANTS
+            const GRADE_POINTS = {
+                'A+': 4.5, 'A0': 4.0,
+                'B+': 3.5, 'B0': 3.0,
+                'C+': 2.5, 'C0': 2.0,
+                'D+': 1.5, 'D0': 1.0,
+                'F': 0.0,
+                'P': null, 'NP': null, 'PENDING': null
+            };
+
+            const SEMESTER_LIST_MAP = {
+                '2yr': ['1-1', '1-2', '2-1', '2-2'],
+                '3yr': ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2'],
+                '4yr': ['1-1', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2']
+            };
+
+            const DEFAULT_TARGETS = {
+                '2yr': { total: 75, major: 45, liberal: 15 },
+                '3yr': { total: 112, major: 70, liberal: 20 },
+                '4yr': { total: 130, major: 95, liberal: 24 }
+            };
+
+            // APP STATE
+            let appData = {
+                userId: null,
+                degreeTrack: '4yr',
+                studentInfo: {
+                    name: '김동의',
+                    school: '동의과학대학교',
+                    dept: '영어영문학과',
+                    grade: '2학년',
+                    semester: '1학기'
+                },
+                targets: {
+                    total: 130,
+                    major: 95,
+                    liberal: 24,
+                    majorReq: null,
+                    majorElec: null,
+                    majorBase: null,
+                    includeBaseInMajor: true
+                },
+                currentSemester: '2-1',
+                currentCategoryFilter: 'ALL',
+                recSem: '2-1',
+                courses: []
+            };
+
+            // INITIAL DEFAULT DEMO COURSES (15 SPECIFIED COURSES)
+            const DEMO_COURSES = [
+                { id: '1', semester: '1-1', name: '대학영어 1', credits: 2, category: 'LIBERAL', grade: 'C0', isRetake: false },
+                { id: '2', semester: '1-1', name: '학술적 글쓰기와 발표', credits: 3, category: 'LIBERAL', grade: 'D+', isRetake: true },
+                { id: '3', semester: '1-1', name: '철학의 이해', credits: 3, category: 'LIBERAL', grade: 'C+', isRetake: false },
+                { id: '4', semester: '1-1', name: '영문학 개론', credits: 3, category: 'MAJOR_BASE', grade: 'C0', isRetake: false },
+                { id: '5', semester: '1-1', name: '영어학의 이해', credits: 3, category: 'MAJOR_BASE', grade: 'D0', isRetake: true },
+
+                { id: '6', semester: '1-2', name: '대학영어 2', credits: 2, category: 'LIBERAL', grade: 'C+', isRetake: false },
+                { id: '7', semester: '1-2', name: '세계 역사와 문화', credits: 3, category: 'LIBERAL', grade: 'D+', isRetake: false },
+                { id: '8', semester: '1-2', name: '영미 산문의 이해', credits: 3, category: 'MAJOR_BASE', grade: 'C0', isRetake: false },
+                { id: '9', semester: '1-2', name: '영어 발음 및 음성학', credits: 3, category: 'MAJOR_BASE', grade: 'F', isRetake: false },
+                { id: '10', semester: '1-2', name: '기초 영작문', credits: 3, category: 'MAJOR_BASE', grade: 'C+', isRetake: false },
+
+                { id: '11', semester: '2-1', name: '영미 시의 이해', credits: 3, category: 'MAJOR_REQ', grade: 'B0', isRetake: false },
+                { id: '12', semester: '2-1', name: '영어 문법의 구조', credits: 3, category: 'MAJOR_REQ', grade: 'B+', isRetake: false },
+                { id: '13', semester: '2-1', name: '19세기 영미 소설', credits: 3, category: 'MAJOR_ELEC', grade: 'B0', isRetake: false },
+                { id: '14', semester: '2-1', name: '학술적 글쓰기와 발표', credits: 3, category: 'LIBERAL', grade: 'A0', isRetake: true },
+                { id: '15', semester: '2-1', name: '영어학의 이해', credits: 3, category: 'MAJOR_BASE', grade: 'B+', isRetake: true }
+            ];
+
+            // STORAGE HELPERS
+            function saveAppData() {
+                try {
+                    const jsonStr = JSON.stringify(appData);
+                    localStorage.setItem('GRADUATION_TRACKER_DATA_V4', jsonStr);
+                    sessionStorage.setItem('GRADUATION_TRACKER_DATA_V4', jsonStr);
+                } catch(e) {
+                    console.warn('Storage error:', e);
+                }
+            }
+
+            function loadAppData() {
+                try {
+                    const saved = localStorage.getItem('GRADUATION_TRACKER_DATA_V4') || sessionStorage.getItem('GRADUATION_TRACKER_DATA_V4');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (parsed && typeof parsed === 'object') {
+                            appData = Object.assign({}, appData, parsed);
+                            if (!appData.userId) appData.userId = generateUserId();
+                            return;
+                        }
+                    }
+                } catch(e) {
+                    console.error('Load error:', e);
+                }
+                // First time load fallback
+                appData.userId = generateUserId();
+                appData.courses = [...DEMO_COURSES];
+                saveAppData();
+            }
+
+            function generateUserId() {
+                return 'USER-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+            }
+
+            // NAVIGATION & TABS
+            window.switchTab = function(tabName) {
+                document.querySelectorAll('section[id^="tab-content-"]').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+                const targetSec = document.getElementById('tab-content-' + tabName);
+                const targetBtn = document.getElementById('nav-' + tabName);
+
+                if (targetSec) targetSec.classList.remove('hidden');
+                if (targetBtn) targetBtn.classList.add('active');
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                renderAll();
+            };
+
+            window.navigateToCoursesFromDash = function(targetSem, filterCat) {
+                appData.currentSemester = targetSem || '2-1';
+                appData.currentCategoryFilter = filterCat || 'ALL';
+                window.switchTab('courses');
+            };
+
+            // RENDER ALL
+            function renderAll() {
+                renderHeaderAndBanner();
+                renderStudentProfile();
+                renderDashboard();
+                renderCoursesTab();
+                renderSettingsTab();
+            }
+
+            function renderHeaderAndBanner() {
+                const headerBadge = document.getElementById('header-degree-badge');
+                if (headerBadge) {
+                    const mapName = { '2yr': '2년제 (4학기)', '3yr': '3년제 (6학기)', '4yr': '4년제 (8학기)' };
+                    headerBadge.textContent = mapName[appData.degreeTrack] || '4년제 (8학기)';
+                }
+                const cloudDisp = document.getElementById('cloud-id-display');
+                if (cloudDisp) cloudDisp.textContent = appData.userId;
+                const cloudInput = document.getElementById('input-my-cloud-id');
+                if (cloudInput) cloudInput.value = appData.userId;
+            }
+
+            function renderStudentProfile() {
+                const info = appData.studentInfo || {};
+                const nameEl = document.getElementById('profile-name');
+                const schoolEl = document.getElementById('profile-school');
+                const deptEl = document.getElementById('profile-dept');
+                const semEl = document.getElementById('profile-grade-semester');
+
+                if (nameEl) nameEl.textContent = info.name || '이름 입력';
+                if (schoolEl) schoolEl.textContent = info.school || '동의과학대학교';
+                if (deptEl) deptEl.textContent = info.dept || '영어영문학과';
+                if (semEl) semEl.textContent = (info.grade || '2학년') + ' ' + (info.semester || '1학기');
+            }
+
+            function renderDashboard() {
+                const validCourses = appData.courses.filter(c => c.grade !== 'F' && c.grade !== 'NP' && c.grade !== 'PENDING');
+                
+                let totalEarned = 0;
+                let majorEarned = 0;
+                let liberalEarned = 0;
+                let reqEarned = 0;
+                let elecEarned = 0;
+                let baseEarned = 0;
+
+                let sumPoints = 0;
+                let sumGpaCredits = 0;
+
+                validCourses.forEach(c => {
+                    const cr = Number(c.credits) || 0;
+                    totalEarned += cr;
+
+                    if (c.category === 'LIBERAL') {
+                        liberalEarned += cr;
+                    } else {
+                        if (c.category === 'MAJOR_REQ') reqEarned += cr;
+                        if (c.category === 'MAJOR_ELEC') elecEarned += cr;
+                        if (c.category === 'MAJOR_BASE') baseEarned += cr;
+
+                        if (c.category === 'MAJOR_BASE') {
+                            if (appData.targets.includeBaseInMajor) majorEarned += cr;
+                        } else {
+                            majorEarned += cr;
+                        }
+                    }
+
+                    const pts = GRADE_POINTS[c.grade];
+                    if (pts !== null && pts !== undefined) {
+                        sumPoints += pts * cr;
+                        sumGpaCredits += cr;
+                    }
+                });
+
+                const overallGpa = sumGpaCredits > 0 ? (sumPoints / sumGpaCredits).toFixed(2) : '0.00';
+
+                // Dashboard stats elements
+                document.getElementById('dash-gpa').textContent = overallGpa;
+                document.getElementById('dash-total-earned').textContent = totalEarned;
+                document.getElementById('dash-total-target').textContent = '/ ' + appData.targets.total + ' 학점';
+                document.getElementById('dash-major-earned').textContent = majorEarned;
+                document.getElementById('dash-major-target').textContent = '/ ' + appData.targets.major + ' 학점';
+                document.getElementById('dash-liberal-earned').textContent = liberalEarned;
+                document.getElementById('dash-liberal-target').textContent = '/ ' + appData.targets.liberal + ' 학점';
+
+                // Category breakdown
+                document.getElementById('dash-req-earned').textContent = reqEarned;
+                document.getElementById('dash-req-target').textContent = appData.targets.majorReq ? '/ ' + appData.targets.majorReq + '학점' : '/ 미설정';
+                document.getElementById('dash-elec-earned').textContent = elecEarned;
+                document.getElementById('dash-elec-target').textContent = appData.targets.majorElec ? '/ ' + appData.targets.majorElec + '학점' : '/ 미설정';
+                document.getElementById('dash-base-earned').textContent = baseEarned;
+                document.getElementById('dash-base-target').textContent = appData.targets.majorBase ? '/ ' + appData.targets.majorBase + '학점' : '/ 미설정';
+
+                // Progress bars
+                const totalPct = Math.min(100, Math.round((totalEarned / appData.targets.total) * 100)) || 0;
+                const majorPct = Math.min(100, Math.round((majorEarned / appData.targets.major) * 100)) || 0;
+                const liberalPct = Math.min(100, Math.round((liberalEarned / appData.targets.liberal) * 100)) || 0;
+
+                document.getElementById('prog-bar-total').style.width = totalPct + '%';
+                document.getElementById('prog-text-total').textContent = `${totalPct}% (남은 학점: ${Math.max(0, appData.targets.total - totalEarned)}학점)`;
+
+                document.getElementById('prog-bar-major').style.width = majorPct + '%';
+                document.getElementById('prog-text-major').textContent = `${majorPct}% (남은 학점: ${Math.max(0, appData.targets.major - majorEarned)}학점)`;
+
+                document.getElementById('prog-bar-liberal').style.width = liberalPct + '%';
+                document.getElementById('prog-text-liberal').textContent = `${liberalPct}% (남은 학점: ${Math.max(0, appData.targets.liberal - liberalEarned)}학점)`;
+
+                // Diagnostic message
+                const badge = document.getElementById('status-badge');
+                const msg = document.getElementById('status-message');
+                if (totalEarned >= appData.targets.total && majorEarned >= appData.targets.major && liberalEarned >= appData.targets.liberal) {
+                    badge.className = 'px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800';
+                    badge.textContent = '졸업 가능';
+                    msg.textContent = '🎉 모든 최소 졸업 기준 학점을 충족하였습니다!';
+                } else {
+                    badge.className = 'px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800';
+                    badge.textContent = '이수 진행 중';
+                    msg.textContent = `졸업까지 총 ${Math.max(0, appData.targets.total - totalEarned)}학점 (전공 ${Math.max(0, appData.targets.major - majorEarned)}학점, 교양 ${Math.max(0, appData.targets.liberal - liberalEarned)}학점) 남았습니다.`;
+                }
+            }
+
+            function renderCoursesTab() {
+                const sems = SEMESTER_LIST_MAP[appData.degreeTrack] || SEMESTER_LIST_MAP['4yr'];
+                const semGrid = document.getElementById('semester-button-grid');
+                semGrid.innerHTML = '';
+
+                sems.forEach(sem => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    const active = sem === appData.currentSemester;
+                    btn.className = `px-3 py-1.5 text-xs font-bold rounded-xl transition-all border ${active ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'}`;
+                    btn.textContent = sem + ' 학기';
+                    btn.onclick = () => {
+                        appData.currentSemester = sem;
+                        saveAppData();
+                        renderCoursesTab();
+                    };
+                    semGrid.appendChild(btn);
+                });
+
+                // Filter buttons state
+                ['ALL', 'MAJOR_REQ', 'MAJOR_ELEC', 'MAJOR_BASE', 'LIBERAL'].forEach(cat => {
+                    const btn = document.getElementById('cat-filter-' + cat);
+                    if (btn) {
+                        if (cat === appData.currentCategoryFilter) {
+                            btn.className = 'px-2 sm:px-2.5 py-1 text-xs font-bold rounded-xl transition-all border bg-blue-600 text-white border-blue-600 shadow-sm';
+                        } else {
+                            btn.className = 'px-2 sm:px-2.5 py-1 text-xs font-medium rounded-xl transition-all border bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200';
+                        }
+                    }
+                });
+
+                // Render current semester list
+                const semCourses = appData.courses.filter(c => c.semester === appData.currentSemester);
+                const filteredCourses = semCourses.filter(c => {
+                    if (appData.currentCategoryFilter === 'ALL') return true;
+                    if (appData.currentCategoryFilter === 'MAJOR_ALL') return c.category !== 'LIBERAL';
+                    return c.category === appData.currentCategoryFilter;
+                });
+
+                // Semester summary statistics
+                let applied = 0;
+                let earned = 0;
+                let ptsSum = 0;
+                let gpaCrSum = 0;
+
+                semCourses.forEach(c => {
+                    const cr = Number(c.credits) || 0;
+                    applied += cr;
+                    if (c.grade !== 'F' && c.grade !== 'NP' && c.grade !== 'PENDING') earned += cr;
+                    const pts = GRADE_POINTS[c.grade];
+                    if (pts !== null && pts !== undefined) {
+                        ptsSum += pts * cr;
+                        gpaCrSum += cr;
+                    }
+                });
+
+                document.getElementById('summary-semester-title').textContent = `${appData.currentSemester} 학기 요약`;
+                document.getElementById('summary-applied-credits').textContent = applied;
+                document.getElementById('summary-earned-credits').textContent = earned;
+                document.getElementById('summary-semester-gpa').textContent = gpaCrSum > 0 ? (ptsSum / gpaCrSum).toFixed(2) : '0.00';
+
+                // Course Table Render
+                const container = document.getElementById('course-list-container');
+                container.innerHTML = '';
+
+                if (filteredCourses.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 space-y-2">
+                            <p class="text-2xl">📚</p>
+                            <p class="text-xs sm:text-sm font-medium">등록된 과목이 없습니다. [+ 과목 추가] 버튼을 눌러 추가하세요.</p>
+                        </div>`;
+                    return;
+                }
+
+                const tableWrapper = document.createElement('div');
+                tableWrapper.className = 'bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden';
+                
+                let rowsHtml = filteredCourses.map(c => {
+                    const catMap = { 'MAJOR_REQ': '전필', 'MAJOR_ELEC': '전선', 'MAJOR_BASE': '전기', 'LIBERAL': '교양' };
+                    const catClass = { 'MAJOR_REQ': 'bg-indigo-50 text-indigo-700', 'MAJOR_ELEC': 'bg-blue-50 text-blue-700', 'MAJOR_BASE': 'bg-sky-50 text-sky-700', 'LIBERAL': 'bg-emerald-50 text-emerald-700' };
+
+                    return `
+                        <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition-colors text-xs sm:text-sm">
+                            <td class="p-3 sm:p-4">
+                                <div class="font-bold text-slate-800 flex items-center gap-1.5 flex-wrap">
+                                    <span>${c.name}</span>
+                                    ${c.isRetake ? '<span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-100 text-amber-800">재수강</span>' : ''}
+                                </div>
+                            </td>
+                            <td class="p-3 sm:p-4 text-center">
+                                <span class="px-2 py-0.5 text-[11px] font-bold rounded-lg ${catClass[c.category]}">${catMap[c.category]}</span>
+                            </td>
+                            <td class="p-3 sm:p-4 text-center font-semibold text-slate-700">${c.credits}학점</td>
+                            <td class="p-3 sm:p-4 text-center font-bold text-blue-600">${c.grade}</td>
+                            <td class="p-3 sm:p-4 text-right whitespace-nowrap">
+                                <button onclick="window.openEditCourseModal('${c.id}')" class="px-2 py-1 text-xs text-slate-600 hover:text-blue-600 font-medium">수정</button>
+                                <button onclick="window.deleteCourse('${c.id}')" class="px-2 py-1 text-xs text-rose-500 hover:text-rose-700 font-medium">삭제</button>
+                            </td>
+                        </tr>`;
+                }).join('');
+
+                tableWrapper.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-[11px] sm:text-xs font-bold">
+                                    <th class="p-3 sm:p-4">과목명</th>
+                                    <th class="p-3 sm:p-4 text-center">이수구분</th>
+                                    <th class="p-3 sm:p-4 text-center">학점</th>
+                                    <th class="p-3 sm:p-4 text-center">성적</th>
+                                    <th class="p-3 sm:p-4 text-right">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rowsHtml}</tbody>
+                        </table>
+                    </div>`;
+
+                container.appendChild(tableWrapper);
+            }
+
+            function renderSettingsTab() {
+                // Degree track buttons
+                ['2yr', '3yr', '4yr'].forEach(track => {
+                    const btn = document.getElementById('degree-btn-' + track);
+                    if (btn) {
+                        if (track === appData.degreeTrack) {
+                            btn.className = 'p-2.5 sm:p-3.5 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-0.5 bg-blue-50 border-blue-500 text-blue-700 font-bold shadow-sm';
+                        } else {
+                            btn.className = 'p-2.5 sm:p-3.5 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-0.5 bg-white border-slate-200 text-slate-600 hover:bg-slate-50';
+                        }
+                    }
+                });
+
+                // Inputs
+                document.getElementById('input-target-total').value = appData.targets.total;
+                document.getElementById('input-target-major').value = appData.targets.major;
+                document.getElementById('input-target-liberal').value = appData.targets.liberal;
+                document.getElementById('input-target-major-req').value = appData.targets.majorReq || '';
+                document.getElementById('input-target-major-elec').value = appData.targets.majorElec || '';
+                document.getElementById('input-target-major-base').value = appData.targets.majorBase || '';
+                document.getElementById('input-include-base-in-major').checked = appData.targets.includeBaseInMajor;
+
+                renderRecommendationCalculator();
+            }
+
+            function renderRecommendationCalculator() {
+                const sems = SEMESTER_LIST_MAP[appData.degreeTrack] || SEMESTER_LIST_MAP['4yr'];
+                const grid = document.getElementById('rec-semester-button-grid');
+                grid.innerHTML = '';
+
+                sems.forEach(sem => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    const active = sem === appData.recSem;
+                    btn.className = `px-2.5 py-1 text-xs font-bold rounded-lg border ${active ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-200'}`;
+                    btn.textContent = sem;
+                    btn.onclick = () => {
+                        appData.recSem = sem;
+                        saveAppData();
+                        renderRecommendationCalculator();
+                    };
+                    grid.appendChild(btn);
+                });
+
+                document.getElementById('rec-current-sem-text').textContent = appData.recSem;
+
+                const curIdx = sems.indexOf(appData.recSem);
+                const remainingSemestersCount = sems.length - curIdx;
+
+                // Prior earned credits before current recSem
+                const priorSems = sems.slice(0, curIdx);
+                let priorTotal = 0;
+                let priorMajor = 0;
+                let priorLiberal = 0;
+
+                appData.courses.forEach(c => {
+                    if (priorSems.includes(c.semester) && c.grade !== 'F' && c.grade !== 'NP' && c.grade !== 'PENDING') {
+                        const cr = Number(c.credits) || 0;
+                        priorTotal += cr;
+                        if (c.category === 'LIBERAL') priorLiberal += cr;
+                        else priorMajor += cr;
+                    }
+                });
+
+                const remTotal = Math.max(0, appData.targets.total - priorTotal);
+                const remMajor = Math.max(0, appData.targets.major - priorMajor);
+                const remLiberal = Math.max(0, appData.targets.liberal - priorLiberal);
+
+                const recTotal = remainingSemestersCount > 0 ? Math.ceil(remTotal / remainingSemestersCount) : 0;
+                const recMajor = remainingSemestersCount > 0 ? Math.ceil(remMajor / remainingSemestersCount) : 0;
+                const recLiberal = remainingSemestersCount > 0 ? Math.ceil(remLiberal / remainingSemestersCount) : 0;
+
+                document.getElementById('rec-total-per-sem').textContent = recTotal + ' 학점';
+                document.getElementById('rec-major-per-sem').textContent = recMajor + ' 학점';
+                document.getElementById('rec-liberal-per-sem').textContent = recLiberal + ' 학점';
+
+                document.getElementById('rec-guide-tip').textContent = 
+                    `💡 ${appData.recSem}학기 포함 남은 ${remainingSemestersCount}개 학기 동안 매 학기 약 ${recTotal}학점(전공 ${recMajor}학점, 교양 ${recLiberal}학점)씩 이수하면 졸업 요건을 채울 수 있습니다.`;
+            }
+
+            // MODAL HANDLERS
+            window.openAddCourseModal = function() {
+                document.getElementById('modal-course-title').textContent = '과목 추가';
+                document.getElementById('modal-course-id').value = '';
+                document.getElementById('modal-input-name').value = '';
+                document.getElementById('modal-input-credits').value = '3';
+                document.getElementById('modal-input-category').value = 'MAJOR_REQ';
+                document.getElementById('modal-input-grade').value = 'A+';
+                document.getElementById('modal-input-is-retake').checked = false;
+
+                fillSemesterOptions();
+                document.getElementById('modal-input-semester').value = appData.currentSemester;
+                document.getElementById('modal-course').classList.remove('hidden');
+            };
+
+            window.openEditCourseModal = function(courseId) {
+                const target = appData.courses.find(c => c.id === courseId);
+                if (!target) return;
+
+                document.getElementById('modal-course-title').textContent = '과목 수정';
+                document.getElementById('modal-course-id').value = target.id;
+                document.getElementById('modal-input-name').value = target.name;
+                document.getElementById('modal-input-credits').value = target.credits;
+                document.getElementById('modal-input-category').value = target.category;
+                document.getElementById('modal-input-grade').value = target.grade;
+                document.getElementById('modal-input-is-retake').checked = !!target.isRetake;
+
+                fillSemesterOptions();
+                document.getElementById('modal-input-semester').value = target.semester;
+                document.getElementById('modal-course').classList.remove('hidden');
+            };
+
+            function fillSemesterOptions() {
+                const sems = SEMESTER_LIST_MAP[appData.degreeTrack] || SEMESTER_LIST_MAP['4yr'];
+                const select = document.getElementById('modal-input-semester');
+                select.innerHTML = sems.map(s => `<option value="${s}">${s} 학기</option>`).join('');
+            }
+
+            window.closeCourseModal = function() {
+                document.getElementById('modal-course').classList.add('hidden');
+            };
+
+            window.handleCourseNameInput = function(val) {
+                const notice = document.getElementById('auto-retake-notice');
+                const isDup = appData.courses.some(c => c.name.trim() === val.trim() && c.semester !== appData.currentSemester);
+                if (isDup && val.trim().length > 0) {
+                    notice.classList.remove('hidden');
+                    document.getElementById('modal-input-is-retake').checked = true;
+                } else {
+                    notice.classList.add('hidden');
+                }
+            };
+
+            window.handleSaveCourse = function(e) {
+                e.preventDefault();
+                const id = document.getElementById('modal-course-id').value;
+                const sem = document.getElementById('modal-input-semester').value;
+                const name = document.getElementById('modal-input-name').value.trim();
+                const credits = Number(document.getElementById('modal-input-credits').value);
+                const category = document.getElementById('modal-input-category').value;
+                const grade = document.getElementById('modal-input-grade').value;
+                const isRetake = document.getElementById('modal-input-is-retake').checked;
+
+                if (!name) return;
+
+                if (id) {
+                    const idx = appData.courses.findIndex(c => c.id === id);
+                    if (idx !== -1) {
+                        appData.courses[idx] = { id, semester: sem, name, credits, category, grade, isRetake };
+                    }
+                } else {
+                    const newCourse = {
+                        id: Date.now().toString(),
+                        semester: sem,
+                        name,
+                        credits,
+                        category,
+                        grade,
+                        isRetake
+                    };
+                    appData.courses.push(newCourse);
+                }
+
+                saveAppData();
+                closeCourseModal();
+                renderAll();
+            };
+
+            window.deleteCourse = function(id) {
+                if (confirm('정말 이 과목을 삭제하시겠습니까?')) {
+                    appData.courses = appData.courses.filter(c => c.id !== id);
+                    saveAppData();
+                    renderAll();
+                }
+            };
+
+            // STUDENT INFO MODAL
+            window.openStudentInfoModal = function() {
+                const info = appData.studentInfo || {};
+                document.getElementById('modal-input-student-name').value = info.name || '김동의';
+                document.getElementById('modal-input-school-name').value = info.school || '동의과학대학교';
+                document.getElementById('modal-input-dept-name').value = info.dept || '영어영문학과';
+                document.getElementById('modal-input-student-grade').value = info.grade || '2학년';
+                document.getElementById('modal-input-student-semester').value = info.semester || '1학기';
+                document.getElementById('modal-student-info').classList.remove('hidden');
+            };
+
+            window.closeStudentInfoModal = function() {
+                document.getElementById('modal-student-info').classList.add('hidden');
+            };
+
+            window.handleSaveStudentInfo = function(e) {
+                e.preventDefault();
+                appData.studentInfo = {
+                    name: document.getElementById('modal-input-student-name').value.trim() || '이름 입력',
+                    school: document.getElementById('modal-input-school-name').value.trim() || '동의과학대학교',
+                    dept: document.getElementById('modal-input-dept-name').value.trim() || '영어영문학과',
+                    grade: document.getElementById('modal-input-student-grade').value,
+                    semester: document.getElementById('modal-input-student-semester').value
+                };
+                saveAppData();
+                closeStudentInfoModal();
+                renderAll();
+            };
+
+            // SETTINGS HANDLERS
+            window.selectDegreeTrack = function(track) {
+                appData.degreeTrack = track;
+                if (DEFAULT_TARGETS[track]) {
+                    appData.targets.total = DEFAULT_TARGETS[track].total;
+                    appData.targets.major = DEFAULT_TARGETS[track].major;
+                    appData.targets.liberal = DEFAULT_TARGETS[track].liberal;
+                }
+                saveAppData();
+                renderAll();
+            };
+
+            window.handleSaveSettings = function(e) {
+                e.preventDefault();
+                appData.targets.total = Number(document.getElementById('input-target-total').value) || 130;
+                appData.targets.major = Number(document.getElementById('input-target-major').value) || 95;
+                appData.targets.liberal = Number(document.getElementById('input-target-liberal').value) || 24;
+                appData.targets.majorReq = document.getElementById('input-target-major-req').value ? Number(document.getElementById('input-target-major-req').value) : null;
+                appData.targets.majorElec = document.getElementById('input-target-major-elec').value ? Number(document.getElementById('input-target-major-elec').value) : null;
+                appData.targets.majorBase = document.getElementById('input-target-major-base').value ? Number(document.getElementById('input-target-major-base').value) : null;
+
+                saveAppData();
+                alert('졸업 기준 설정이 저장되었습니다.');
+                renderAll();
+            };
+
+            window.toggleIncludeBaseInMajor = function(checked) {
+                appData.targets.includeBaseInMajor = checked;
+                saveAppData();
+                renderAll();
+            };
+
+            window.setCategoryFilter = function(cat) {
+                appData.currentCategoryFilter = cat;
+                saveAppData();
+                renderCoursesTab();
+            };
+
+            // BACKUP / CLOUD MODALS
+            window.openCloudSyncModal = function() {
+                document.getElementById('modal-cloud-sync').classList.remove('hidden');
+            };
+            window.closeCloudSyncModal = function() {
+                document.getElementById('modal-cloud-sync').classList.add('hidden');
+            };
+            window.copyCloudId = function() {
+                navigator.clipboard.writeText(appData.userId);
+                alert('동기화 ID가 클립보드에 복사되었습니다.');
+            };
+
+            window.openBackupModal = function() {
+                document.getElementById('input-backup-data').value = JSON.stringify(appData, null, 2);
+                document.getElementById('modal-backup').classList.remove('hidden');
+            };
+            window.closeBackupModal = function() {
+                document.getElementById('modal-backup').classList.add('hidden');
+            };
+            window.copyBackupCode = function() {
+                const txt = document.getElementById('input-backup-data');
+                txt.select();
+                navigator.clipboard.writeText(txt.value);
+                alert('백업 코드가 클립보드에 복사되었습니다.');
+            };
+            window.restoreBackupCode = function() {
+                try {
+                    const txt = document.getElementById('input-backup-data').value;
+                    const parsed = JSON.parse(txt);
+                    if (parsed && typeof parsed === 'object' && Array.isArray(parsed.courses)) {
+                        appData = parsed;
+                        saveAppData();
+                        closeBackupModal();
+                        renderAll();
+                        alert('데이터가 성공적으로 복원되었습니다.');
+                    } else {
+                        alert('올바르지 않은 백업 데이터 형식입니다.');
+                    }
+                } catch(e) {
+                    alert('백업 코드를 읽는 중 오류가 발생했습니다.');
+                }
+            };
+
+            window.confirmResetData = function() {
+                if (confirm('모든 과목 및 설정 데이터가 초기화됩니다. 계속하시겠습니까?')) {
+                    localStorage.removeItem('GRADUATION_TRACKER_DATA_V4');
+                    sessionStorage.removeItem('GRADUATION_TRACKER_DATA_V4');
+                    location.reload();
+                }
+            };
+
+            window.openRetakeComparisonModal = function() {
+                alert('재수강 성적 비교: 이전 수강 과목과 재수강 과목의 성적을 비교 분석합니다.');
+            };
+
+            // INIT APP ON LOAD
+            document.addEventListener('DOMContentLoaded', function() {
+                loadAppData();
+                renderAll();
+            });
+
+        })();
+    </script>
+</body>
+</html>
