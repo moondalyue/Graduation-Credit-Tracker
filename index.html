@@ -150,7 +150,7 @@
 
             <!-- Main Stats Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
-                <div onclick="window.switchTab('courses')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
+                <div onclick="window.navigateToCoursesFromDash('2-1', 'ALL')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-1.5 sm:mb-2">
                             <span class="text-xs sm:text-sm font-semibold text-slate-500">전체 누적 평점</span>
@@ -164,7 +164,7 @@
                     <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 sm:mt-2">상세 과목 보기</p>
                 </div>
 
-                <div onclick="window.switchTab('settings')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
+                <div onclick="window.navigateToCoursesFromDash('2-1', 'ALL')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-1.5 sm:mb-2">
                             <span class="text-xs sm:text-sm font-semibold text-slate-500">총 취득 학점</span>
@@ -178,7 +178,7 @@
                     <p id="dash-total-remaining-sub" class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 sm:mt-2">남은 학점 분석</p>
                 </div>
 
-                <div onclick="window.filterCategoryFromDash('MAJOR_ALL')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
+                <div onclick="window.navigateToCoursesFromDash('2-1', 'MAJOR_ALL')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-1.5 sm:mb-2">
                             <span class="text-xs sm:text-sm font-semibold text-slate-500">전공 취득 학점</span>
@@ -192,7 +192,7 @@
                     <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 sm:mt-2">전공 과목 보기</p>
                 </div>
 
-                <div onclick="window.filterCategoryFromDash('LIBERAL')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
+                <div onclick="window.navigateToCoursesFromDash('2-1', 'LIBERAL')" class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-1.5 sm:mb-2">
                             <span class="text-xs sm:text-sm font-semibold text-slate-500">교양 취득 학점</span>
@@ -1390,9 +1390,16 @@
             renderAll();
         };
 
+        window.navigateToCoursesFromDash = function(sem, cat) {
+            appData.currentSemester = sem || '2-1';
+            appData.categoryFilter = cat || 'ALL';
+            saveAppData();
+            window.switchTab('courses');
+        };
+
         window.filterCategoryFromDash = function(cat) {
             if (cat === 'MAJOR_ALL') {
-                appData.categoryFilter = 'MAJOR_REQ';
+                appData.categoryFilter = 'MAJOR_ALL';
             } else {
                 appData.categoryFilter = cat;
             }
