@@ -39,15 +39,15 @@
 
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm w-full">
         <div class="max-w-5xl mx-auto px-3 sm:px-6">
-            <div class="flex items-center justify-between h-16 gap-2">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between min-h-[4rem] h-auto sm:h-16 py-2.5 sm:py-0 gap-2 sm:gap-4">
                 <!-- Logo & Track Indicator -->
-                <div class="flex items-center gap-2 cursor-pointer min-w-0" onclick="window.switchTab('dashboard')">
+                <div class="flex items-center gap-2 cursor-pointer min-w-0 w-full sm:w-auto" onclick="window.switchTab('dashboard')">
                     <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base sm:text-lg shadow-md shadow-blue-500/20 flex-shrink-0">
                         🎓
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1.5 flex-wrap">
-                            <h1 class="text-sm sm:text-lg font-bold text-slate-900 leading-tight whitespace-nowrap">나의 졸업 학점 계산기</h1>
+                            <h1 class="text-xs sm:text-lg font-bold text-slate-900 leading-tight truncate">나의 졸업 학점 계산기</h1>
                             <span id="header-degree-badge" class="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-md bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
                                 4년제 (8학기)
                             </span>
@@ -57,23 +57,23 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-                    <button onclick="window.openCloudSyncModal()" class="px-2 sm:px-2.5 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors flex items-center gap-1 shadow-sm">
+                <div class="flex items-center justify-end gap-1 sm:gap-2 flex-shrink-0 w-full sm:w-auto overflow-x-auto no-scrollbar">
+                    <button onclick="window.openCloudSyncModal()" class="px-2 sm:px-2.5 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors flex items-center gap-1 shadow-sm whitespace-nowrap">
                         <span>☁️</span>
                         <span class="hidden sm:inline">기기 간 동기화</span>
                         <span class="sm:hidden">동기화</span>
                     </button>
-                    <button onclick="window.openRetakeComparisonModal()" class="px-2 sm:px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors flex items-center gap-1 shadow-sm">
+                    <button onclick="window.openRetakeComparisonModal()" class="px-2 sm:px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors flex items-center gap-1 shadow-sm whitespace-nowrap">
                         <span>📊</span>
                         <span class="hidden sm:inline">재수강 성적 비교</span>
                         <span class="sm:hidden">재수강</span>
                     </button>
-                    <button onclick="window.openBackupModal()" class="px-2 sm:px-2.5 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors flex items-center gap-1 shadow-sm">
+                    <button onclick="window.openBackupModal()" class="px-2 sm:px-2.5 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors flex items-center gap-1 shadow-sm whitespace-nowrap">
                         <span>💾</span>
                         <span class="hidden sm:inline">백업/복원</span>
                         <span class="sm:hidden">백업</span>
                     </button>
-                    <button onclick="window.confirmResetData()" class="px-2 sm:px-2.5 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg transition-colors flex items-center gap-1">
+                    <button onclick="window.confirmResetData()" class="px-2 sm:px-2.5 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap">
                         <span>🔄</span>
                         <span class="hidden sm:inline">초기화</span>
                     </button>
