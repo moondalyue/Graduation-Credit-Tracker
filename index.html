@@ -772,7 +772,7 @@
                     const saved = localStorage.getItem('GRADUATION_TRACKER_DATA_V4') || sessionStorage.getItem('GRADUATION_TRACKER_DATA_V4');
                     if (saved) {
                         const parsed = JSON.parse(saved);
-                        if (parsed && typeof parsed === 'object') {
+                        if (parsed && typeof parsed === 'object' && Array.isArray(parsed.courses) && parsed.courses.length > 0) {
                             appData = Object.assign({}, appData, parsed);
                             if (!appData.userId) appData.userId = generateUserId();
                             return;
